@@ -66,7 +66,7 @@ if __name__ == '__main__'
   main()
 ```
 
-- Continue running the script if an exeception is raised:
+- Continue running the script if an exception is raised:
 
 ```python
 from LoggingDecorator import logd
@@ -81,6 +81,23 @@ def main():
 if __name__ == '__main__'
   main()
 ```
+
+- Set logging level:
+
+```python
+from LoggingDecorator import logd
+
+@logd(logging_level='critical')
+def foo():
+  print('foo method')
+
+def main():
+  foo()
+
+if __name__ == '__main__'
+  main()
+```
+    - The available options are: `critical`, `error`, `warning`, `info`, `debug` and `notset`.
 
 ## Authors <a name = "authors"></a>
 
