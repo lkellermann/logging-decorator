@@ -71,7 +71,7 @@ if __name__ == '__main__'
 ```python
 from LoggingDecorator import logd
 
-@logd(raise_exception=False)
+@logd(raise_error=False)
 def foo():
   print('foo method')
 
@@ -97,7 +97,82 @@ def main():
 if __name__ == '__main__'
   main()
 ```
-    - The available options are: `critical`, `error`, `warning`, `info`, `debug` and `notset`.
+    
+  - The available options are: `critical`, `error`, `warning`, `info`, `debug` and `notset`.
+## Output Sample
+
+Supose that you have a `foo` project with the following structure:
+```
+📦foo
+ ┗ 📜foo.py
+ ```
+ And the contents of the `foo.py` file is the following:
+```python
+from time import sleep
+from LoggingDecorator import logd
+
+@logd(file=True, logging_level='debug')
+def foo_sum(a:int, b:int=1):
+    sleep(3)
+    return a+b
+
+@logd(file=False, raise_error=True)
+def foo_div(a:int, b:int=0):
+    return a/b
+
+def main():
+    foo_sum(1)
+    foo_div(5)
+    
+if __name__=='__main__':
+    main()
+```
+
+The method `foo_sum` will print and generate a file like `./foo/log/foo_foo_sum_28Aug2021_114203.log` with the following content:
+
+```
+2021-08-28 11:42:03,695 - Working directory:     /absolute/path/to/foo
+2021-08-28 11:42:03,695 - Module name:           __main__
+2021-08-28 11:42:03,696 - Method name:           foo_sum
+2021-08-28 11:42:03,696 - Error message:         None
+2021-08-28 11:42:03,696 - Start time:            2021-08-28 11:42:00.690282
+2021-08-28 11:42:03,696 - End time:              2021-08-28 11:42:03.694016
+2021-08-28 11:42:03,696 - Elapsed time:          0:00:03.003734
+2021-08-28 11:42:03,697 - Variables:             (a: int, b: int = 1)
+2021-08-28 11:42:03,697 - Args:                  None
+2021-08-28 11:42:03,697 - Kwargs:                None
+2021-08-28 11:42:03,697 - Log path:              /absolute/path/to/foo/log/foo_foo_sum_28Aug2021_114203.log
+```
+
+And the `foo_div` will generate the following message in your screen:
+
+```
+
+2021-08-28 11:42:03,698 - Module name:           __main__
+2021-08-28 11:42:03,699 - Method name:           foo_div
+2021-08-28 11:42:03,699 - Error message:         division by zero
+2021-08-28 11:42:03,699 - Start time:            2021-08-28 11:42:03.698178
+2021-08-28 11:42:03,699 - End time:              2021-08-28 11:42:03.698622
+2021-08-28 11:42:03,699 - Elapsed time:          0:00:00.000444
+2021-08-28 11:42:03,700 - Variables:             (a: int, b: int = 0)
+2021-08-28 11:42:03,700 - Args:                  (5,)
+2021-08-28 11:42:03,700 - Kwargs:                {}
+2021-08-28 11:42:03,700 - Log path:              None
+Traceback (most recent call last):
+  File "/absolute/path/to/foo/foo.py", line 18, in <module>
+    main()
+  File "//absolute/path/to/foo/foo/foo.py", line 15, in main
+    foo_div(5)
+  File "/local/python/path/site-packages/LoggingDecorator/LoggingDecorator.py", line 33, in wrapped_function
+    return LoggingDecorator(*dargs, **dkwargs).call(original_method, *args, **kwargs)
+  File "/local/python/path/site-packages/LoggingDecorator/LoggingDecorator.py", line 78, in call
+    return self._summary(original_method, 
+  File "/local/python/path/site-packages/LoggingDecorator/LoggingDecorator.py", line 149, in _summary
+    raise LogException(error_message)
+LoggingDecorator.LoggingDecorator.LogException: LogException[division by zero]
+
+```
+
 
 ## Authors <a name = "authors"></a>
 
