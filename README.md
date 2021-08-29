@@ -1,20 +1,13 @@
 
-<H1 align="center">LoggingDecorator</H1>
-
-<div align="center">
+<div align="left">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![GitHub Issues](https://img.shields.io/github/issues/lkellermann/logging-decorator.svg)](https://github.com/lkellermann/logging-decorator/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/lkellermann/logging-decorator.svg)](https://github.com/lkellermann/logging-decorator/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
-
 </div>
 
-
-<p align="center">  A simple way to log your Python methods.
-    <br> 
-</p>
-
+# LoggingDecorator
 ## About <a name = "about"></a>
 
 LoggingDecorator is a MIT licensed general-purpose software package written in Python that simplyfies the task of logging methods of other Python scripts.
@@ -27,7 +20,7 @@ To install this package you can just type in your Python terminal:
 pip install logging-decorator
 ```
 
-### Prerequisites
+### Requirements
 
 This Python package only works with `Python 3.6` or later.
 
