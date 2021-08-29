@@ -5,7 +5,7 @@ with open("README.md","r", encoding='utf-8') as f:
     
 setuptools.setup(
     name="logging-decorator",
-    version="1.0.1",
+    version="1.0.2-dev",
     author="Leandro Kellermann de Oliveira",
     author_email="kellermann@alumni.usp.br",
     description="A simple method decorator to generate logs easily.",
@@ -13,11 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/lkellermann/logging-decorator",
     project_urls={
-        "Status":"https://github.com/lkellermann/logging-decorator/blob/main",
         "Pull requests":"https://github.com/lkellermann/logging-decorator/pulls",
         "Issues":"https://github.com/lkellermann/logging-decorator/issues",
-        "License":"https://github.com/lkellermann/logging-decorator/blob/main/license",
-        
+        "License":"https://github.com/lkellermann/logging-decorator/blob/main/license",        
     },
     classifiers=[
         "Programming Language :: Python :: 3",
