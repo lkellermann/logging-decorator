@@ -5,7 +5,7 @@ with open("README.md","r", encoding='utf-8') as f:
     
 setuptools.setup(
     name="logging-decorator",
-    version="1.0.2-dev",
+    version="1.0.2",
     author="Leandro Kellermann de Oliveira",
     author_email="kellermann@alumni.usp.br",
     description="A simple method decorator to generate logs easily.",
