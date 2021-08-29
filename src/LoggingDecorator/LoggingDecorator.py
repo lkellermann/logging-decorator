@@ -23,19 +23,22 @@ def logd(*dargs, **dkwargs) -> object:
         
         def wrapper(original_method):
             def wrapped_function(*args, **kwargs):
-                return LoggingDecorator().call(original_method, *args, **kwargs)    
+                return _LoggingDecorator()\
+                    ._call(original_method, *args, **kwargs)    
             return wrapped_function    
         return wrapper(dargs[0])
     
     else:
+        
         def wrapper(original_method):
             def wrapped_function(*args, **kwargs):
-                return LoggingDecorator(*dargs, **dkwargs).call(original_method, *args, **kwargs)
+                return _LoggingDecorator(*dargs, **dkwargs)\
+                    ._call(original_method, *args, **kwargs)
             return wrapped_function
         return wrapper
     
 
-class LoggingDecorator:
+class _LoggingDecorator:
     debug_level={'critical':logging.CRITICAL,
                  'error':logging.ERROR,
                  'warning':logging.WARNING,
@@ -57,11 +60,11 @@ class LoggingDecorator:
         self._start_time = datetime.now()
         self._file = file
         self._raise_error = raise_error
-        self._logging_level=LoggingDecorator.debug_level[logging_level]
+        self._logging_level=_LoggingDecorator.debug_level[logging_level]
         
         
     
-    def call(self, original_method: object, *args, **kwargs):
+    def _call(self, original_method: object, *args, **kwargs):
         """Method to run the original method and collect metadata to be logged.
 
         Args:
