@@ -5,9 +5,6 @@ import logging
 import inspect
 from functools import lru_cache
 from datetime import datetime
-from ..factory import logger
-from ..utils.exceptions import LogException
-from ..utils.directory_manager import DirectoryManager
 
 class WrappedLoggingClass: # pylint: disable=R0902
     """
@@ -38,7 +35,7 @@ class WrappedLoggingClass: # pylint: disable=R0902
         self.file = file
         self._file_error_prefix = f'{file_error_prefix}_' if file_error_prefix is not None else ''
         self._raise_error = raise_error
-        self._logging_level = WrappedLoggingClass._debug_level[logging_level]
+        self.logging_level = WrappedLoggingClass._debug_level[logging_level]
 
 
 
@@ -51,13 +48,15 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         try:
             self.original_method = original_method(*args,**kwargs)
+            #self.method_variables = original_method
+            #self.method_name= original_method
+            self.module_name = original_method
+            print(f'\n\n\nself.module_name: {self.module_name}\n\n\n')
             self.error_message = None
         # The broad exception will generate the
         # LogException message to be logged.
         except Exception as exception:          # pylint: disable=broad-except
             self.error_message = str(exception)
-
-        return self.summary
 
     # Getters:
     @property
@@ -102,16 +101,10 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         return self._output_file
 
-    @property
-    def summary(self):
-        """
-        summary property getter.
-        """
-        return self._summary
 
     # Setters
-    @lru_cache
     @original_method.setter
+    @lru_cache
     def original_method(self, original_method):
         """
         original_method property setter.
@@ -120,26 +113,27 @@ class WrappedLoggingClass: # pylint: disable=R0902
         return self._original_method
 
     @method_variables.setter
-    def method_variables(self):
+    def method_variables(self, original_method):
         """
         method_variables property setter.
         """
-        self._method_variables = inspect.signature(self.original_method)
+        self._method_variables = inspect.signature(original_method)
+        return self._method_variables
 
     @method_name.setter
-    def method_name(self):
+    def method_name(self, original_method):
         """
         method_name property setter.
         """
-        self._method_name = self.original_method.__name__
+        self._method_name = original_method.__name__
         return self._method_name
 
     @module_name.setter
-    def module_name(self):
+    def module_name(self, original_method):
         """
         module_name property setter.
         """
-        self._module_name =  self.original_method.__module__
+        self._module_name =  original_method.__module__
         return self._module_name
 
     @error_message.setter
@@ -157,31 +151,3 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         self._output_file = output_file
         return self._output_file
-
-    @summary.setter
-    def summary(self) -> bool:
-        """
-        summary property setter.
-        """
-        try:
-            if self.file:
-                print('Output log file...')
-                directory_manager = DirectoryManager(self._file_error_prefix)
-                directory_manager.create_log_folder()
-                self.ouput_file = directory_manager.output_file_path()
-
-                # file handler
-            else:
-                self.output_file = None
-
-                stream = logger.LoggerStream(self)
-                stream.output_logger()
-
-            self._summary = True
-        except LogException as exception:
-            if self._raise_error and (self.error_message is not None):
-                raise exception
-
-            self._summary = False
-
-        return self._summary
