@@ -35,8 +35,8 @@ def logd(*dargs, **dkwargs) -> object:
     def wrapper(original_method):# pylint: disable=E0102
         def wrapped_function(*args, **kwargs):
             wrapped_object = WrappedLoggingClass(*dargs, **dkwargs)
+            wrapped_object_call = wrapped_object.call(original_method, *args, **kwargs)
             _create_client_summary(wrapped_object)
-            return wrapped_object\
-                .call(original_method, *args, **kwargs)
+            return wrapped_object_call
         return wrapped_function
     return wrapper
