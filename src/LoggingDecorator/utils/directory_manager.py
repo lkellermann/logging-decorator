@@ -5,7 +5,7 @@ Module to generate strings and create directories and files.
 from pathlib import PurePath, Path
 from datetime import datetime
 from typing import Union
-from shared_parameters import  DirectoryParameters as dp
+from .shared_parameters import  DirectoryParameters as dp
 
 class DirectoryManager:
     """
