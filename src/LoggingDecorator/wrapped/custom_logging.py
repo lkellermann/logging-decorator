@@ -5,6 +5,7 @@ import logging
 import inspect
 from functools import lru_cache
 from datetime import datetime
+from ..utils.directory_manager import DirectoryManager
 
 class WrappedLoggingClass: # pylint: disable=R0902
     """
@@ -37,9 +38,16 @@ class WrappedLoggingClass: # pylint: disable=R0902
         self.error_message = None
         self.method_variables = None
         self.method_name = None
-        self._file_error_prefix = f'{file_error_prefix}_' if file_error_prefix is not None else ''
+        self.file_error_prefix = f'{file_error_prefix}_' if file_error_prefix is not None else ''
         self._raise_error = raise_error
         self.logging_level = logging_level
+        if file:
+            self.directory_manager = DirectoryManager(self.file_error_prefix)
+            self.output_file = self.directory_manager
+        else:
+            self.directory_manager = None
+            self.output_file = None
+
 
 
 
@@ -53,6 +61,9 @@ class WrappedLoggingClass: # pylint: disable=R0902
         # Update all properties depending on original_method.
         self.original_method = original_method
 
+        if self.file:
+            self.output_file = self.directory_manager
+            print(f'OUTPUT FILE {self.output_file}')
         try:
             original_method(*args,**kwargs)
             self.error_message = None
@@ -172,12 +183,12 @@ class WrappedLoggingClass: # pylint: disable=R0902
         return self._error_message
 
     @output_file.setter
-    def output_file(self, output_file):
+    def output_file(self, dir_manager):
         """
         output_file property setter.
         """
         if self.file:
-            self._output_file = output_file
+            self._output_file = dir_manager.output_file_path()
         else:
             self._output_file = None
         return self._output_file

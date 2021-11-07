@@ -6,7 +6,7 @@ from .wrapped.custom_logging import WrappedLoggingClass
 from .wrapped import summary
 
 def _create_client_summary(wrapped_object):
-    streams = [summary.LoggerStreamSummary]
+    streams = [summary.LoggerStreamSummary, summary.LoggerFileSummary]
     for stream in streams:
         obj = stream(wrapped_object)
         obj.create_summary()

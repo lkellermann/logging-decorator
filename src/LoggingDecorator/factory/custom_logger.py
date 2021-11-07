@@ -49,7 +49,7 @@ class CustomLogger(AbstractCustomLogger):       # pylint: disable=R0903
         """
         cwd_name =  self.directory_parameters.cwd_name
         logger = self.logging.getLogger(cwd_name)
-        logger.handlers.clear()
+        # logger.handlers.clear()
         logger.setLevel(self.wrapped.logging_level)
         logger.addHandler(handler_object)
         self._logger = logger
@@ -66,8 +66,6 @@ class CustomLogger(AbstractCustomLogger):       # pylint: disable=R0903
     def output_logger(self):
         end_time = datetime.now()
         elapsed_time = end_time - self.wrapped.start_time
-        # print(f'{help(self.logger)}')
-        # print(f'{self.logger.handle}')
         if self.logger.hasHandlers:
             self.logger.info(f'Working directory:     {self.directory_parameters.cwd}')
             self.logger.info(f'Module name:           {self.wrapped.module_name}')
@@ -77,10 +75,9 @@ class CustomLogger(AbstractCustomLogger):       # pylint: disable=R0903
             self.logger.info(f'End time:              {end_time}')
             self.logger.info(f'Elapsed time:          {elapsed_time}')
             self.logger.info(f'Variables:             {self.wrapped.method_variables}')
-            self.logger.critical('teste')
         else:
             raise ValueError('Logger has no handler attached.')
         if self.wrapped.file:
-            self.logger.info(f'Log path:              {self.wrapped.output_log}')
+            self.logger.info(f'Log path:              {self.wrapped.output_file}')
 
         self.logging.shutdown()

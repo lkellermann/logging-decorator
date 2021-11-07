@@ -16,5 +16,10 @@ class LoggerStreamSummary:
         stream = logger.LoggerStream(self.wrapped)
         stream.output_logger()
 
-class FileStreamSummary:
-    pass
+class LoggerFileSummary:
+    def __init__(self, wrapped: WrappedLoggingClass):
+        self.wrapped = wrapped
+
+    def create_summary(self):
+        return logger.LoggerFile(self.wrapped)
+
