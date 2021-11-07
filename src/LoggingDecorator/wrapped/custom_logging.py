@@ -33,9 +33,13 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         self.start_time = datetime.now()
         self.file = file
+        self.original_method = None
+        self.error_message = None
+        self.method_variables = None
+        self.method_name = None
         self._file_error_prefix = f'{file_error_prefix}_' if file_error_prefix is not None else ''
         self._raise_error = raise_error
-        self.logging_level = WrappedLoggingClass._debug_level[logging_level]
+        self.logging_level = logging_level
 
 
 
@@ -46,19 +50,30 @@ class WrappedLoggingClass: # pylint: disable=R0902
         Args:
             original_method (object): generic method being wrapped.
         """
+        # Update all properties depending on original_method.
+        self.original_method = original_method
+
         try:
-            self.original_method = original_method(*args,**kwargs)
-            #self.method_variables = original_method
-            #self.method_name= original_method
-            self.module_name = original_method
-            print(f'\n\n\nself.module_name: {self.module_name}\n\n\n')
+            original_method(*args,**kwargs)
             self.error_message = None
         # The broad exception will generate the
         # LogException message to be logged.
         except Exception as exception:          # pylint: disable=broad-except
             self.error_message = str(exception)
 
+        self.module_name = original_method
+        self.method_name = original_method
+        self.method_variables = original_method
+
+
     # Getters:
+    @property
+    def logging_level(self):
+        """
+        logging_level property getter.
+        """
+        return self._logging_level
+
     @property
     def original_method(self):
         """
@@ -103,6 +118,11 @@ class WrappedLoggingClass: # pylint: disable=R0902
 
 
     # Setters
+    @logging_level.setter
+    def logging_level(self, debug_level):
+        self._logging_level = WrappedLoggingClass._debug_level[debug_level]
+        return self._logging_level
+
     @original_method.setter
     @lru_cache
     def original_method(self, original_method):
@@ -117,7 +137,10 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         method_variables property setter.
         """
-        self._method_variables = inspect.signature(original_method)
+        if original_method is not None:
+            self._method_variables = inspect.signature(original_method)
+        else:
+            self._method_variables = None
         return self._method_variables
 
     @method_name.setter
@@ -125,7 +148,11 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         method_name property setter.
         """
-        self._method_name = original_method.__name__
+        if original_method is not None:
+            self._method_name = original_method.__name__
+        else:
+            self._method_name = None
+
         return self._method_name
 
     @module_name.setter
@@ -149,5 +176,8 @@ class WrappedLoggingClass: # pylint: disable=R0902
         """
         output_file property setter.
         """
-        self._output_file = output_file
+        if self.file:
+            self._output_file = output_file
+        else:
+            self._output_file = None
         return self._output_file
